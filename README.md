@@ -7,8 +7,6 @@ Python script to automate your Fortnite Imposter's games.
 - Languages
     - You **SHOULD** have the language set in english, so that it can match the images in the folder.
     - You **CAN** have whatever language you want, but then, you **MUST** replace the images from the folder with new ones that you have.
-- Pointer
-    - You also probably need to update the `main.py` to set the postition of the pointer to click the *Play* button. Check the file for more info on how to proceed.
 - Variables
     - By default, the emote button is set to 'B' in Impostorr's mode. But if you have set it to something else, make sure to change it in the `main.py` file.
     This will allow you to emote in-game, preventing the new AFK penalty.

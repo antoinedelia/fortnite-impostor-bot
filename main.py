@@ -8,6 +8,7 @@ from win32gui import GetWindowText, GetForegroundWindow
 
 PATH_IMAGE = "./images/"
 EMOTE_KEY = "b"
+
 total_xp = 0
 
 
@@ -22,9 +23,12 @@ def get_xp_collected() -> int:
 
 
 def launch_game():
-    # This needs to be changed to fit your screen size
-    # Point the cursor to the Play button and run `pyautogui.position()` to get X and Y coordinates
-    pyautogui.click(2361, 1022)
+    coords = pyautogui.locateCenterOnScreen(PATH_IMAGE + "play_button.png", confidence=0.7)
+    if coords:
+        print("Found play button")
+        pyautogui.click(coords, clicks=3, interval=0.1)
+    else:
+        print("Could not find play button")
 
 
 # This happens on the victory/defeat screen
@@ -59,6 +63,7 @@ def hold_f():
     pyautogui.keyUp('f')
 
 
+# Useful if you happen to gain a level, it exits the rewards screen
 def press_esc():
     pyautogui.press('esc')
 
@@ -69,18 +74,14 @@ def is_in_game() -> bool:
     return active_window == "Fortnite"
 
 
-def move_randomly():
-    x = 5
-    for _ in range(x):
-        if not is_in_game():
-            continue
-        move_keys = ['w', 'a', 's', 'd', EMOTE_KEY]
-        random_move = random.choice(move_keys)
+def make_random_action():
+    move_keys = ['w', 'a', 's', 'd', EMOTE_KEY, EMOTE_KEY]
+    random_move = random.choice(move_keys)
+    if random_move == EMOTE_KEY:
+        pyautogui.press(EMOTE_KEY, presses=4, interval=0.5)
+    else:
         pyautogui.keyDown(random_move)
         time.sleep(1)
-        if random_move == EMOTE_KEY:
-            # Click on an emote
-            pyautogui.click(1284, 369)
         pyautogui.keyUp(random_move)
 
 
@@ -107,6 +108,6 @@ while(True):
         hold_f()
     else:
         print("Moving to avoid AFK penalty.")
-        move_randomly()
+        make_random_action()
 
     time.sleep(1)
