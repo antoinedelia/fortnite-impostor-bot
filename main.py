@@ -3,8 +3,12 @@ import pyautogui
 from python_imagesearch.imagesearch import imagesearch
 from pytesseract import pytesseract
 import time
+import random
+import re
+from win32gui import GetWindowText, GetForegroundWindow
 
 PATH_IMAGE = "./images/"
+EMOTE_KEY = "b"
 total_xp = 0
 
 
@@ -23,6 +27,7 @@ def launch_game():
     pyautogui.click(2361, 1022)
 
 
+# This happens on the victory/defeat screen
 def hold_e():
     global total_xp
     xp = 0
@@ -47,6 +52,7 @@ def hold_e():
     pyautogui.keyUp('e')
 
 
+# This is used to skip the vote
 def hold_f():
     pyautogui.keyDown('f')
     time.sleep(3)
@@ -57,10 +63,34 @@ def press_esc():
     pyautogui.press('esc')
 
 
-print("Running the script")
+def is_in_game() -> bool:
+    active_window = GetWindowText(GetForegroundWindow())
+    active_window = re.sub(r'\W+', '', active_window)  # Remove all non-alphanumeric characters to avoid trailing whitespaces
+    return active_window == "Fortnite"
 
+
+def move_randomly():
+    x = 5
+    for _ in range(x):
+        if not is_in_game():
+            continue
+        move_keys = ['w', 'a', 's', 'd', EMOTE_KEY]
+        random_move = random.choice(move_keys)
+        pyautogui.keyDown(random_move)
+        time.sleep(1)
+        if random_move == EMOTE_KEY:
+            # Click on an emote
+            pyautogui.click(1284, 369)
+        pyautogui.keyUp(random_move)
+
+
+print("Running the script")
 while(True):
-    if imagesearch(PATH_IMAGE + "in_lobby.png")[0] != -1:
+    if not is_in_game():
+        print("Not running as long as the main program is not Fortnite")
+        time.sleep(1)
+        continue
+    if imagesearch(PATH_IMAGE + "in_lobby.png")[0] != -1 or imagesearch(PATH_IMAGE + "in_lobby_2.png")[0] != -1:
         print("In lobby, starting the game.")
         launch_game()
     elif imagesearch(PATH_IMAGE + "agent_win.png")[0] != -1:
@@ -75,5 +105,8 @@ while(True):
     elif imagesearch(PATH_IMAGE + "voting.png")[0] != -1:
         print("Voting time. Skipping.")
         hold_f()
+    else:
+        print("Moving to avoid AFK penalty.")
+        move_randomly()
 
     time.sleep(1)
