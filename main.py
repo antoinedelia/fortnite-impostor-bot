@@ -1,7 +1,6 @@
 from PIL import ImageGrab
 import pyautogui
 from python_imagesearch.imagesearch import imagesearch
-from pytesseract import pytesseract
 import time
 import random
 import re
@@ -13,6 +12,7 @@ total_xp = 0
 
 
 def get_xp_collected() -> int:
+    from pytesseract import pytesseract
     image = ImageGrab.grab(bbox=(1314, 1009, 1505, 1065))
     xp = pytesseract.image_to_string(image)
     if "," in xp:
